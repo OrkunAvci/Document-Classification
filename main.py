@@ -66,7 +66,7 @@ if "__main__":
 		# Update link list
 		all_links[tag] = urls
 
-	# Save the list of links
+	# Save the list of links and data block
 	if len(all_links) > 0 and len(data_block.keys()) > 0:
 		fm.save("_all_links", data= all_links)
 		fm.save("_data_block", data= data_block)
