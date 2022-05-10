@@ -1,5 +1,5 @@
 # External Libraries
-from bs4 import BeautifulSoup as bs
+from bs4 import BeautifulSoup as bs, SoupStrainer
 from selenium.webdriver import Chrome,ChromeOptions
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
@@ -12,11 +12,11 @@ import time
 
 def get_url_list(url: str, downs = 100) -> list:
 	"""
-	
+
 	"""
-	ser = Service()
+	ser = Service(executable_path="D:\chromedriver_win32\chromedriver.exe")
 	# options.add_argument('--headless')
-	# options.add_argument('--disable-gpu') 
+	# options.add_argument('--disable-gpu')
 	browser = Chrome(service = ser)
 	browser.get(url)
 	time.sleep(1)
@@ -27,11 +27,12 @@ def get_url_list(url: str, downs = 100) -> list:
 		time.sleep(0.1)
 		downs = downs - 1
 
-	soup = bs(browser.page_source, "html.parser")
-
 	pattern = re.compile("https://[a-z]*\.hashnode\.dev/.*")
+	links = SoupStrainer('a', href = pattern)
+	soup = bs(browser.page_source, "html.parser", parse_only = links)
+
 	urls = []
-	for item in soup.find_all("a", href = True, class_ = "block") :
+	for item in soup.find_all("a", href = True) :
 		if pattern.match(item["href"]) :
 			urls.append(item["href"])
 
@@ -42,7 +43,8 @@ def get_url_list(url: str, downs = 100) -> list:
 
 def get_text_from_url(url: str) -> str:
 	page = req.get(url).text
-	soup = bs(page, "html.parser")
+	para = SoupStrainer('p')
+	soup = bs(page, "html.parser", parse_only = para)
 
 	text = ""
 	for elem in soup.find_all("p", text=True):
