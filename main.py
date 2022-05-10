@@ -38,7 +38,7 @@ def stats()-> None:
 	print("There are total of ", total_urls, " posts in the data block.")
 
 
-if "__main__":
+if __name__ == '__main__':
 	feed_link = "https://hashnode.com/n/"
 	tags = [
 		# Comment out for safety and sanity while debugging.
@@ -53,16 +53,17 @@ if "__main__":
 		# Get urls and save them locally
 		urls = wm.get_url_list(feed_link + tag)
 		fm.save("tag_" + tag + "_links", data= urls)
-		
+
 		# Get raw text from each url and process it into tokens
 		for url in urls:
+			print("Processing ", fm.clean_up_name(url))
 			raw = wm.get_text_from_url(url)
-			fm.save("raw_" + url, data= raw) # Optional.
-			data_block[url] = {
+			# fm.save("raw_" + url, data= raw) # Optional.
+			data_block[fm.clean_up_name(url)] = {
 				"tag": tag,
 				"tokens": tokenize(raw)
 			}
-		
+
 		# Update link list
 		all_links[tag] = urls
 
@@ -71,4 +72,6 @@ if "__main__":
 		fm.save("_all_links", data= all_links)
 		fm.save("_data_block", data= data_block)
 
-	
+	stats()
+
+
