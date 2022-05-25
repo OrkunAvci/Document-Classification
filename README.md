@@ -1,7 +1,5 @@
 # Document-Classification
 
-
-
 ## Quick Start
 
 Install all the external libraries with this line.
